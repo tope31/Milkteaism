@@ -4,6 +4,7 @@ import com.javakun.milkteaism.model.Milktea;
 import com.javakun.milkteaism.service.MilkteaService;
 import com.javakun.milkteaism.utils.ExcelExport;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -32,23 +33,22 @@ public class MilkteaController {
     }
 
     @GetMapping("/getMilktea")
-    public ResponseEntity<Page<Milktea>> getMilktea(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "milkteaId")  String sort) {
+    public ResponseEntity<Page<Milktea>> getMilktea(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "30") int size, @RequestParam(defaultValue = "milkteaId")  String sort) {
         return new ResponseEntity<>(milkteaService.findMilkteaByMilkteaId(page,size, sort), HttpStatus.OK);
     }
 
-    @PostMapping("/export")
+    @SneakyThrows
+    @GetMapping("/export")
     public void exportToExcel(HttpServletResponse response) {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=users_" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=Milktea_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
         List<Milktea> listMilktea = milkteaService.getAllMilktea();
-
         ExcelExport excelExport = new ExcelExport(listMilktea);
-
         excelExport.export(response);
     }
 }

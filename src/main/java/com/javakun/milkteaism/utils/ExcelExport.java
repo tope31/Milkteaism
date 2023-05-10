@@ -50,6 +50,8 @@ public class ExcelExport {
             cell.setCellValue((Long) value);
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
+        }else if (value instanceof Integer){
+            cell.setCellValue((Integer) value);
         }else {
             cell.setCellValue((String) value);
         }
